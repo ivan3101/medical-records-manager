@@ -4,10 +4,9 @@
   "description": "The API for a medical record manager (Tesis)",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "nodemon -L",
-    "start": "node ./dist/index.js",
-    "prod": "npm run build && npm run start"
+    "start-development": "nodemon -L",
+    "start-production": "npm run build && node ./dist/index.js",
+    "build": "tsc"
   },
   "author": "Ivan De Menezes Jean Mobayed",
   "license": "ISC",
