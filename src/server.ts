@@ -1,9 +1,10 @@
+import { decorateApp } from "@awaitjs/express";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as helmet from "helmet";
 
 export class Server {
-    private readonly app: express.Application = express();
+    private readonly app: express.Application = decorateApp(express());
 
     public constructor() {
         this.initConfig();
