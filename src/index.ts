@@ -1,11 +1,12 @@
-import { createServer } from "http";
+import {Application} from "express";
+import {createServer, Server as HttpServer} from "http";
 import { variables } from "./config/globals";
 import { Server } from "./server";
 import {DbConnService, IDbConnParams} from "./services/dbConnService";
 
-const app = new Server().App;
-const port = variables.port;
-const server = createServer(app);
+const app: Application = new Server().App;
+const port: number = variables.port;
+const server: HttpServer = createServer(app);
 
 server.listen(port);
 
@@ -17,15 +18,24 @@ server.on("listening", async () => {
         dbPort: variables.db_port,
         dbUsername: variables.db_username
     };
-    try {
-        const dbConnection = await new DbConnService(dbParams).DbConnection;
-    } catch (e) {
-        console.error("No se pudo establecer conexión con MongoDB", e);
-    }
-});
 
-server.on("close", () => {
-    // console.log("Server closed");
+    try {
+        await new DbConnService(dbParams).DbConnection;
+
+        process
+            .on('SIGINT', () => {
+                Server.closeConnection(server);
+            })
+            .on("SIGTERM", () => {
+                Server.closeConnection(server);
+            })
+            .on("SIGUSR2", () => {
+                Server.closeConnection(server);
+            })
+
+    } catch (error) {
+        throw new Error(error.message)
+    }
 });
 
 server.on("error", (err) => {
