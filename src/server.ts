@@ -2,9 +2,10 @@ import { decorateApp } from "@awaitjs/express";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as helmet from "helmet";
+import { ErrorService } from "./services/errorService";
 
 export class Server {
-    private readonly app: express.Application = decorateApp(express());
+    private readonly app = decorateApp(express());
 
     public constructor() {
         this.initConfig();
@@ -21,6 +22,12 @@ export class Server {
     }
 
     private initRoutes(): any {
-        this.app.get("/", (req, res) => res.status(200).send("Hello world"));
+        this.app
+            .getAsync("/", async (req, res) => {
+                return new Promise((resolve, reject) => {
+                    setImmediate(() => reject(new Error('woops')))
+                })
+            })
+            .use(ErrorService.errorHandler());
     }
 }
