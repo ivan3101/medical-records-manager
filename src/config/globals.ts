@@ -1,4 +1,12 @@
+import { config } from "dotenv";
+config();
+
 export const variables = {
-    env: process.env.NODE_ENV || "development",
-    port: process.env.PORT || 3000,
+    db_host: process.env.DB_HOST,
+    db_name: process.env.DB_NAME,
+    db_password: process.env.DB_PASSWORD,
+    db_port: process.env.DB_PORT,
+    db_username: process.env.DB_USERNAME,
+    env: process.env.NODE_ENV,
+    port: process.env.PORT || 3000
 };
