@@ -8,5 +8,5 @@ export const variables = {
     db_port: process.env.DB_PORT,
     db_username: process.env.DB_USERNAME,
     env: process.env.NODE_ENV,
-    port: process.env.PORT || 3000
+    port: parseInt(process.env.PORT, 10) || 3000
 };
