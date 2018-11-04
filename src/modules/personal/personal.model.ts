@@ -54,9 +54,9 @@ export class PersonalModel extends AbstractModel {
     }
 
     private initVirtuals(): void {
-        super.Schema.virtual("password").set(async function (password) {
+        super.Schema.virtual("password").set(async function () {
             try {
-                this.password = HelperService.hashPassword(password)
+                this.contraseña = await HelperService.hashPassword(this.contraseña)
             } catch (e) {
                 throw e;
             }
