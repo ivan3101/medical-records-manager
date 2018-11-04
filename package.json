@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@awaitjs/express": "^0.1.4",
+    "argon2": "^0.19.3",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
     "dotenv": "^6.1.0",
