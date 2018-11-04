@@ -8,7 +8,7 @@ export class TempPasswordModel extends AbstractModel {
         super();
         this.createSchema();
         this.initVirtuals();
-        super.createModel("Contraseña");
+        super.createModel("contraseña");
     }
 
     protected createSchema(): void {

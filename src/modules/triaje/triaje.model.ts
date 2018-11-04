@@ -6,7 +6,7 @@ export class TriajeModel extends AbstractModel {
     constructor() {
         super();
         this.createSchema();
-        super.createModel("Triaje");
+        super.createModel("triaje");
     }
 
     protected createSchema(): void {
@@ -64,8 +64,7 @@ export class TriajeModel extends AbstractModel {
                 ref: "Profesor",
                 required: true,
                 type: Schema.Types.ObjectId
-            },
-
+            }
         })
     }
 }

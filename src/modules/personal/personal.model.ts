@@ -8,7 +8,7 @@ export class PersonalModel extends AbstractModel {
         super();
         this.createSchema();
         this.initVirtuals();
-        super.createModel("Personal");
+        super.createModel("personal");
     }
 
     protected createSchema(): void {

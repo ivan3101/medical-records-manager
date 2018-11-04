@@ -6,7 +6,7 @@ export class StudentModel extends AbstractModel{
     constructor() {
         super();
         this.createSchema();
-        super.createModel("Estudiante");
+        super.createModel("estudiante");
     }
 
     protected createSchema(): void {

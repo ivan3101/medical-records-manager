@@ -6,7 +6,7 @@ export class PatientModel extends AbstractModel{
     constructor() {
         super();
         this.createSchema();
-        super.createModel('Paciente');
+        super.createModel('paciente');
     }
 
     protected createSchema(): void {
