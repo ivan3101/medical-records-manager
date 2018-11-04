@@ -17,7 +17,7 @@ export class TriajeModel extends AbstractModel {
                 type: Map
             },
             "estudiante": {
-                ref: "Estudiante",
+                ref: "estudiante",
                 required: true,
                 type: Schema.Types.ObjectId
             },
@@ -37,7 +37,7 @@ export class TriajeModel extends AbstractModel {
                     type: Map
                 },
                 "estudiante": {
-                    ref: "Estudiante",
+                    ref: "estudiante",
                     required: true,
                     type: Schema.Types.ObjectId
                 },
@@ -51,7 +51,7 @@ export class TriajeModel extends AbstractModel {
                     type: Date
                 },
                 "profesor": {
-                    ref: "Profesor",
+                    ref: "profesor",
                     required: true,
                     type: Schema.Types.ObjectId
                 }
@@ -60,8 +60,13 @@ export class TriajeModel extends AbstractModel {
                 required: true,
                 type: String
             },
+            "paciente": {
+                ref: "paciente",
+                required: true,
+                type: Schema.Types.ObjectId
+            },
             "profesor": {
-                ref: "Profesor",
+                ref: "profesor",
                 required: true,
                 type: Schema.Types.ObjectId
             }
