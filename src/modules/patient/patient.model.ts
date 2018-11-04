@@ -3,7 +3,6 @@ import {AbstractModel} from "../../abstracts/model";
 
 export class PatientModel extends AbstractModel{
 
-
     constructor() {
         super();
         this.createSchema();
