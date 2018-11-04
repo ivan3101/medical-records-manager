@@ -1,10 +1,10 @@
-import {Document, Model, model, Schema} from "mongoose";
+import {model, Schema} from "mongoose";
 
 export abstract class AbstractModel {
     private schema: Schema;
-    private model: Model<Document>;
+    private model;
 
-    public get Model(): Model<Document> {
+    public get Model() {
         return this.model;
     }
 

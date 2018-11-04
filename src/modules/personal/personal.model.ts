@@ -1,6 +1,17 @@
-import {Schema} from "mongoose";
+import {Document, Schema} from "mongoose";
 import {AbstractModel} from "../../abstracts/model";
 import {HelperService} from "../../services/helperService";
+
+export interface IPersonal extends Document {
+    apellido: string;
+    cedula: string;
+    contraseña: string;
+    email: string;
+    nombreDeUsuario: string;
+    nombre: string;
+    rol: string;
+    telefono: string;
+}
 
 export class PersonalModel extends AbstractModel {
 
@@ -21,7 +32,7 @@ export class PersonalModel extends AbstractModel {
                 required: [true, "Debe ingresar la cedula del miembro del personal"],
                 type: String
             },
-            "constraseña": {
+            "contraseña": {
                 required: [true, "Debe ingresar la contraseña del miembro del personal"],
                 type: String
             },
@@ -33,6 +44,10 @@ export class PersonalModel extends AbstractModel {
                 required: [true, "Debe ingresar el nombre del miembro del personal"],
                 type: String
             },
+            "nombreDeUsuario": {
+                required: [true, "Debe ingresar el nombre de usuario del miembro del personal"],
+                type: String
+            },
             "rol": {
                 enum: ["Archivo", "Profesor", "Administrador"],
                 required: [true, "Debe ingresar el rol del miembro del personal"],
@@ -40,10 +55,6 @@ export class PersonalModel extends AbstractModel {
             },
             "telefono": {
                 required: [true, "Debe ingresar el numero de telefono del miembro del personal"],
-                type: String
-            },
-            "username": {
-                required: [true, "Debe ingresar el nombre de usuario del miembro del personal"],
                 type: String
             }
         }, {
@@ -54,7 +65,7 @@ export class PersonalModel extends AbstractModel {
     }
 
     private initVirtuals(): void {
-        super.Schema.virtual("password").set(async function () {
+        super.Schema.virtual("contraseña").set(async function () {
             try {
                 this.contraseña = await HelperService.hashPassword(this.contraseña)
             } catch (e) {
