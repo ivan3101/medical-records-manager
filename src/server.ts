@@ -7,6 +7,7 @@ import {connection} from "mongoose";
 import { ErrorService } from "./services/errorService";
 
 export class Server {
+
     public static closeConnection(server: HttpServer): void {
         server.close(() => {
             connection.close(true, () => {
@@ -16,10 +17,12 @@ export class Server {
     }
 
     private readonly app = decorateApp(express());
+    private readonly errorService = new ErrorService();
 
     public constructor() {
         this.initConfig();
         this.initRoutes();
+        this.initErrorHandlers();
     }
 
     public get App(): express.Application {
@@ -37,7 +40,12 @@ export class Server {
                 return new Promise((resolve, reject) => {
                     setImmediate(() => reject(new Error('woops')))
                 })
-            })
-            .use(ErrorService.errorHandler());
+            });
+    }
+
+    private initErrorHandlers(): any {
+        this.app
+            .use(this.errorService.boomErrorHandler())
+            .use(this.errorService.errorHandler());
     }
 }
