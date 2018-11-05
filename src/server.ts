@@ -4,7 +4,7 @@ import * as express from "express";
 import * as helmet from "helmet";
 import {Server as HttpServer} from "http";
 import {connection} from "mongoose";
-import {PersonalController} from "./modules/personal/personal.controller";
+import { StudentController } from "./modules/student/student.controller";
 import { ErrorService } from "./services/errorService";
 
 export class Server {
@@ -37,7 +37,7 @@ export class Server {
 
     private initRoutes(): any {
         this.app
-            .postAsync("/", new PersonalController().addPersonal);
+            .postAsync("/", new StudentController().addStudent);
     }
 
     private initErrorHandlers(): any {
