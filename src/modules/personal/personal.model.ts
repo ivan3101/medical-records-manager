@@ -18,7 +18,6 @@ export class PersonalModel extends AbstractModel {
     constructor() {
         super();
         this.createSchema();
-        this.initVirtuals();
         super.createModel("personal");
     }
 
@@ -49,7 +48,7 @@ export class PersonalModel extends AbstractModel {
                 type: String
             },
             "rol": {
-                enum: ["Archivo", "Profesor", "Administrador"],
+                enum: ["Archivo", "Profesor"],
                 required: [true, "Debe ingresar el rol del miembro del personal"],
                 type: String
             },
@@ -60,16 +59,6 @@ export class PersonalModel extends AbstractModel {
         }, {
             toJSON: {
                 virtuals: true
-            }
-        })
-    }
-
-    private initVirtuals(): void {
-        super.Schema.virtual("contraseña").set(async function () {
-            try {
-                this.contraseña = await HelperService.hashPassword(this.contraseña)
-            } catch (e) {
-                throw e;
             }
         })
     }

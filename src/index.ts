@@ -1,5 +1,6 @@
 import {Application} from "express";
 import {createServer, Server as HttpServer} from "http";
+import {connection} from "mongoose";
 import { variables } from "./config/globals";
 import { Server } from "./server";
 import {DbConnService, IDbConnParams} from "./services/dbConnService";
@@ -30,8 +31,12 @@ server.on("listening", async () => {
                 Server.closeConnection(server);
             })
             .on("SIGUSR2", () => {
-                Server.closeConnection(server);
-            })
+                server.close(() => {
+                    connection.close(true,() => {
+                        process.kill(process.pid, 'SIGUSR2');
+                    })
+                })
+            });
 
     } catch (error) {
         throw new Error(error.message)
