@@ -20,12 +20,11 @@ export class PersonalController {
       "nombreDeUsuario": req.body.personal.nombreDeUsuario
     }) as any;
 
-    const promises = await Promise.all([email, username]);
+    const cedula = this.Personal.findOne({
+      "cedula": req.body.personal.cedula
+    }) as any;
 
-    const newPersonal = new this.Personal({
-      ...req.body.personal,
-      contraseña: await HelperService.hashPassword(req.body.personal.contraseña)
-    });
+    const promises = await Promise.all([email, username, cedula]);
 
     if (promises[0]) {
       next(badRequest("Ya se encuentra registrado un miembro del personal con ese email. Por favor, elija otro y" +
@@ -34,8 +33,15 @@ export class PersonalController {
     } else if (promises[1]) {
       next(badRequest("Ya se encuentra registrado un miembro del personal con ese nombre de usuario. Por favor," +
         " elija otro y vuelva a intentarlo"));
-
+    } else if (promises[2]) {
+      next(badRequest("Ya se encuentra registrado un miembro del personal con esa cedula"));
+      
     } else {
+      const newPersonal = new this.Personal({
+        ...req.body.personal,
+        contraseña: await HelperService.hashPassword(req.body.personal.contraseña)
+      });
+
       await newPersonal.save();
 
       res
