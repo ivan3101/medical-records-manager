@@ -4,7 +4,7 @@
   "description": "The API for a medical record manager (Tesis)",
   "main": "./dist/index.js",
   "scripts": {
-    "start-development": "nodemon -L",
+    "start-development": "nodemon",
     "start-production": "npm run build && node ./dist/index.js",
     "build": "tsc"
   },
@@ -17,6 +17,7 @@
     "body-parser": "^1.18.3",
     "boom": "^7.2.2",
     "cors": "^2.8.4",
+    "decko": "^1.2.0",
     "dotenv": "^6.1.0",
     "express": "^4.16.4",
     "helmet": "^3.14.0",
