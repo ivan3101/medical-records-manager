@@ -22,9 +22,11 @@ export class StudentController {
 
     if (promises[0]) {
       next(badRequest("Ya se encuentra registrado un estudiante con esa cedula"));
+      
     } else if (promises[1]) {
       next(badRequest("Ya se encuentra registrado un estudiante con ese correo. Por favor, escoja otro y vuelva a" +
         " intentarlo"));
+
     } else {
       const newStudent = new this.Student(req.body.estudiante);
       await newStudent.save();
