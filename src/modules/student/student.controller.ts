@@ -9,7 +9,7 @@ export class StudentController {
   private readonly Student: Model<IStudent> = new StudentModel().Model;
 
   @bind
-  public async addStudent(req: Request, res: Response, next: NextFunction) {
+  public async addStudent(req: Request, res: Response, next: NextFunction): Promise<any> {
     const cedula = this.Student.findOne({
       "cedula": req.body.estudiante.cedula
     }) as any;
