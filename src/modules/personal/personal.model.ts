@@ -49,17 +49,13 @@ export class PersonalModel extends AbstractModel {
         type: String
       },
       "rol": {
-        enum: ["Archivo", "Profesor"],
+        enum: ["archivo", "profesor"],
         required: [true, "Debe ingresar el rol del miembro del personal"],
         type: String
       },
       "telefono": {
         required: [true, "Debe ingresar el numero de telefono del miembro del personal"],
         type: String
-      }
-    }, {
-      toJSON: {
-        virtuals: true
       }
     })
   }
