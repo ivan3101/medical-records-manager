@@ -2,11 +2,11 @@ import { badRequest } from "boom";
 import { bind } from "decko";
 import { NextFunction, Request, Response } from "express";
 import { Model } from "mongoose";
-import { IStudent, StudentModel } from "./student.model";
+import { IStudent, studentModel } from "./student.model";
 
 export class StudentController {
 
-  private readonly Student: Model<IStudent> = new StudentModel().Model;
+  private readonly Student: Model<IStudent> = studentModel;
 
   @bind
   public async addStudent(req: Request, res: Response, next: NextFunction): Promise<any> {
@@ -22,7 +22,7 @@ export class StudentController {
 
     if (promises[0]) {
       next(badRequest("Ya se encuentra registrado un estudiante con esa cedula"));
-      
+
     } else if (promises[1]) {
       next(badRequest("Ya se encuentra registrado un estudiante con ese correo. Por favor, escoja otro y vuelva a" +
         " intentarlo"));

@@ -3,10 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import { Model } from "mongoose";
 import { default as PasswordGenerator } from "strict-password-generator";
 import { HelperService } from "../../services/helperService";
-import { ITempPassword, TempPasswordModel } from "./tempPassword.model";
+import { ITempPassword, tempPasswordModel } from "./tempPassword.model";
 
 export class TempPasswordController {
-  private readonly TempPassword: Model<ITempPassword> = new TempPasswordModel().Model;
+  private readonly TempPassword: Model<ITempPassword> = tempPasswordModel;
   private readonly passwordGenerator = new PasswordGenerator();
   private readonly randomPasswordOptions = {
     exactLength: 10

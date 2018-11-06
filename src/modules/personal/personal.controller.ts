@@ -3,11 +3,11 @@ import { bind } from "decko";
 import { NextFunction, Request, Response } from "express";
 import { Model } from "mongoose";
 import { HelperService } from "../../services/helperService";
-import { IPersonal, PersonalModel } from "./personal.model";
+import { IPersonal, personalModel } from "./personal.model";
 
 export class PersonalController {
 
-  private readonly Personal: Model<IPersonal> = new PersonalModel().Model;
+  private readonly Personal: Model<IPersonal> = personalModel;
 
   @bind
   public async addPersonal(req: Request, res: Response, next: NextFunction): Promise<any> {

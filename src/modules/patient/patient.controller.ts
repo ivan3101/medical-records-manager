@@ -2,11 +2,11 @@ import { badRequest } from "boom";
 import { bind } from "decko";
 import { NextFunction, Request, Response } from "express";
 import { Model } from "mongoose";
-import { IPatient, PatientModel } from "./patient.model";
+import { IPatient, patientModel } from "./patient.model";
 
 export class PatientController {
 
-  private readonly Patient: Model<IPatient> = new PatientModel().Model;
+  private readonly Patient: Model<IPatient> = patientModel;
 
   @bind
   public async addPatient(req: Request, res: Response, next: NextFunction) {
