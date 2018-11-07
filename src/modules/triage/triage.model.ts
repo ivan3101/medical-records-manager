@@ -1,6 +1,7 @@
 import { Document, model, Model, Schema, Types } from "mongoose";
 
 export interface ITriage extends Document {
+  active: boolean,
   documento: Map<string, string>,
   estudiante: Types.ObjectId,
   fechaDeAprobacion: Date,
