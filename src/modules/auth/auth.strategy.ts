@@ -76,7 +76,7 @@ export class AuthStrategy {
   private async verify(payload, next) {
     try {
       let user;
-      if (payload.userType === "profesor" || payload.userType === "archivo") {
+      if (payload.userType === "profesor" || payload.userType === "archivo" || payload.userType === "admin") {
         user = await this.Personal.findById(payload.userId);
       } else if (payload.userType === "estudiante") {
         user = await this.TempPassword.findById(payload.userId);

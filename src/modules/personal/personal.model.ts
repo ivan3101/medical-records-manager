@@ -2,6 +2,7 @@ import { Document, model, Model, Schema, Types } from "mongoose";
 
 
 export interface IPersonal extends Document {
+  active: string,
   apellido: string;
   cedula: string;
   contraseña: string;
@@ -14,6 +15,11 @@ export interface IPersonal extends Document {
 }
 
 const personalSchema = new Schema({
+  "active": {
+    default: true,
+    required: true,
+    type: Boolean
+  },
   "apellido": {
     required: [true, "Debe ingresar el apellido del miembro del personal"],
     type: String
@@ -39,7 +45,7 @@ const personalSchema = new Schema({
     type: String
   },
   "rol": {
-    enum: ["archivo", "profesor"],
+    enum: ["admin", "archivo", "profesor"],
     required: [true, "Debe ingresar el rol del miembro del personal"],
     type: String
   },
