@@ -1,6 +1,7 @@
 import { Document, model, Model, Schema, Types } from "mongoose";
 
 export interface IStudent extends Document {
+  active: boolean,
   apellido: string,
   cedula: string,
   email: string,
@@ -10,6 +11,11 @@ export interface IStudent extends Document {
 }
 
 const studentSchema = new Schema({
+  "active": {
+    default: true,
+    required: true,
+    type: Boolean
+  },
   "apellido": {
     required: [true, "Debe ingresar el apellido del estudiante"],
     type: String

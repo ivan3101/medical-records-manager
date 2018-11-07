@@ -126,7 +126,10 @@ export class StudentController {
     try {
       const studentId = req.params.id;
       const modifiedStudent = await (this.Student
-        .findOneAndUpdate({ "_id": studentId }, {
+        .findOneAndUpdate({
+          "_id": studentId,
+          "active": true
+        }, {
           $set: {
             ...req.body.estudiante
           }
