@@ -14,7 +14,7 @@ export class OnHoldController {
   @bind
   public async createOnHold(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
-      const newOnHold = new this.OnHold(req.body.onHold);
+      const newOnHold = new this.OnHold(req.body.enEspera);
 
       await newOnHold.save();
 
@@ -139,9 +139,9 @@ export class OnHoldController {
           " vuelva a intentarlo"));
 
       res
-        .status(203)
+        .status(204)
         .json({
-          httpCode: 203,
+          httpCode: 204,
           message: "El documento ha sido rechazado con exito",
           status: "successful"
         })
@@ -201,6 +201,31 @@ export class OnHoldController {
           status: "successful"
         });
 
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
+  public async modifyOnHold(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const onHoldId = req.params.id;
+      const onHoldModified = await (this.OnHold
+        .findByIdAndUpdate(onHoldId, {
+          $set: {
+            "document": req.body.enEspera.documento,
+            "estado": "En espera"
+          }
+        }, { new: true }) as any)
+        .orFail("El document no ha sido encontrado. Si esta seguro de que el documento existe, vuelva a intentarlo");
+
+      res
+        .status(204)
+        .json({
+          httpCode: 204,
+          message: "Documento actualizado correctamente",
+          status: "successful"
+        });
     } catch (e) {
       next(e);
     }
