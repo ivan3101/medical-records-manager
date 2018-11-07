@@ -16,7 +16,8 @@ export class PatientController {
   public async addPatient(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const cedula = this.Patient.findOne({
-        "cedula": req.body.paciente.cedula
+        "active": true,
+        "cedula": req.body.paciente.cedula,
       });
 
       if (await cedula) {
@@ -68,7 +69,10 @@ export class PatientController {
     try {
       const patientId = req.params.id;
       const patient = await (this.Patient
-        .findById(patientId) as any)
+        .findOne({
+          "_id": patientId,
+          "active": true
+        }) as any)
         .orFail(notFound("No se encontro al paciente. Si esta seguro de que el paciente existe en el sistema, por" +
           " favor vuelva a intentarlo"));
 
