@@ -1,6 +1,7 @@
 import { Document, model, Model, Schema, Types } from "mongoose";
 
 export interface IPatient extends Document {
+  active: boolean,
   apellido: string,
   cedula: string,
   direccion: string,
@@ -14,6 +15,11 @@ export interface IPatient extends Document {
 }
 
 const patientSchema = new Schema({
+  "active": {
+    default: true,
+    required: true,
+    type: Boolean
+  },
   "apellido": {
     required: [true, "Debe ingresar el apellido del paciente"],
     type: String
