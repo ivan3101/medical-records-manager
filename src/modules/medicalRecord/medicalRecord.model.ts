@@ -13,10 +13,6 @@ export interface IMedicalRecord extends Document {
     fechaDeCreacion: Date,
     profesor: Types.ObjectId,
   },
-  numeroDeHistoria: {
-    codigo: string,
-    numero: number
-  },
   paciente: Types.ObjectId,
   profesor: Types.ObjectId
 }
