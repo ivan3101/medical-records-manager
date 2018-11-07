@@ -14,7 +14,26 @@ export class OnHoldController {
   @bind
   public async createOnHold(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
+      let promise = null;
+      if (!req.body.enEspera.modificacion) {
+        if (req.body.enEspera.tipo === "triaje") {
+          promise = this.Triage.findOne({
+            "active": true,
+            "paciente": req.body.enEspera.paciente
+          });
+
+        } else if (req.body.enEspera.tipo === "historia principal") {
+          promise = this.MedicalRecord.findOne({
+            "active": true,
+            "paciente": req.body.enEspera.paciente
+          });
+        }
+      }
       const newOnHold = new this.OnHold(req.body.enEspera);
+
+      if (await promise) {
+        next(badRequest(`Este paciente ya cuenta con este tipo de documento. Si esta tratando de agregar una modificacíón, seleccione Modificacion en el menu`));
+      }
 
       await newOnHold.save();
 
@@ -22,7 +41,7 @@ export class OnHoldController {
         .status(201)
         .json({
           httpCode: 201,
-          message: "Documento agregado a la lista de espera correctamen. En espera de revision por parte de un" +
+          message: "Documento agregado a la lista de espera correctamente. En espera de revision por parte de un" +
             " Profesor",
           state: "successful"
         });

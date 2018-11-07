@@ -21,7 +21,7 @@ export class MedicalRecordController {
         paciente: patientId
       });
 
-      if (medicalRecordPrmoise) {
+      if (await medicalRecordPrmoise) {
         return next(badRequest("Este paciente ya cuenta con una historia medica"))
       }
       

@@ -1,4 +1,4 @@
-import { notFound } from "boom";
+import { badRequest, notFound } from "boom";
 import { bind } from "decko";
 import { NextFunction, Request, Response } from "express";
 import { Model } from "mongoose";
@@ -11,11 +11,19 @@ export class TriageController {
   public async createTriage(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const patientId = req.params.id;
+      const triagePromise = this.Triage.findOne({
+        "active": true,
+        "paciente": patientId
+      });
 
       const newTriage = new this.Triage({
         ...req.body.triaje,
         paciente: patientId
       });
+
+      if (await triagePromise) {
+        return next(badRequest("Este paciente ya cuenta con un Triaje creado"));
+      }
 
       newTriage.numeroDeHistoria = await (this.Triage as any).setRecordNumber();
 
