@@ -5,13 +5,13 @@ export interface ITriage extends Document {
   estudiante: Types.ObjectId,
   fechaDeAprobacion: Date,
   fechaDeCreacion: Date,
-  modificaciones: {
+  modificaciones: [{
     document: Map<string, string>,
     estudiante: Types.ObjectId,
     fechaDeAprobacion: Date,
     fechaDeCreacion: Date,
     profesor: Types.ObjectId,
-  },
+  }],
   numeroDeHistoria: {
     codigo: string,
     numero: number
@@ -51,8 +51,6 @@ const triageSchema = new Schema({
       type: Schema.Types.ObjectId
     },
     "fechaDeAprobacion": {
-      default: Date.now(),
-      required: true,
       type: Date
     },
     "fechaDeCreacion": {
@@ -86,5 +84,29 @@ const triageSchema = new Schema({
     type: Schema.Types.ObjectId
   }
 });
+
+triageSchema.statics.setRecordNumber = async function() {
+  const lastTriage = await this
+    .find({})
+    .where("numeroDeHistoria.codigo").equals("CIN-18")
+    .sort({ "numeroDeHistoria.numero": -1 })
+    .limit(1)
+    .select("numeroDeHistoria");
+
+  if (lastTriage.length){
+    const lastNumber = lastTriage[0].numeroDeHistoria.numero;
+
+    return {
+      "codigo": "CIN-18",
+      "numero": lastNumber + 1
+    };
+
+  } else {
+    return {
+      "codigo": "CIN-18",
+      "numero": 1
+    };
+  }
+};
 
 export const triageModel: Model<ITriage> = model<ITriage>("triaje", triageSchema);

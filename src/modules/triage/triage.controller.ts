@@ -16,27 +16,7 @@ export class TriageController {
         paciente: patientId
       });
 
-      const lastTriage = await this.Triage
-        .find({})
-        .where("numeroDeHistoria.codigo").equals("CIN-18")
-        .sort({ "numeroDeHistoria.numero": -1 })
-        .limit(1)
-        .select("numeroDeHistoria");
-
-      if (lastTriage.length){
-        const lastNumber = lastTriage[0].numeroDeHistoria.numero;
-
-        newTriage.numeroDeHistoria = {
-          "codigo": "CIN-18",
-          "numero": lastNumber + 1
-        };
-
-      } else {
-        newTriage.numeroDeHistoria = {
-          "codigo": "CIN-18",
-          "numero": 1
-        };
-      }
+      newTriage.numeroDeHistoria = await (this.Triage as any).setRecordNumber();
 
       await newTriage.save();
 

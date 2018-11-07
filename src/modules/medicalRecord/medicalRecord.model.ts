@@ -1,4 +1,25 @@
-import { model, Schema } from "mongoose";
+import { Document, Model, model, Schema, Types } from "mongoose";
+
+export interface IMedicalRecord extends Document {
+  documento: Map<string, string>,
+  estudiante: Types.ObjectId,
+  fechaDeAprobacion: Date,
+  fechaDeCreacion: Date,
+  modificaciones: {
+    document: Map<string, string>,
+    estudiante: Types.ObjectId,
+    fechaDeAprobacion: Date,
+    fechaDeCreacion: Date,
+    profesor: Types.ObjectId,
+  },
+  numeroDeHistoria: {
+    codigo: string,
+    numero: number
+  },
+  paciente: Types.ObjectId,
+  profesor: Types.ObjectId
+}
+
 
 const medicalRecordSchema = new Schema({
   "documento": {
@@ -11,12 +32,10 @@ const medicalRecordSchema = new Schema({
     required: true,
     type: Schema.Types.ObjectId
   },
-  "fecha_de_aprobacion": {
-    default: Date.now(),
-    required: true,
+  "fechaDeAprobacion": {
     type: Date
   },
-  "fecha_de_creacion": {
+  "fechaDeCreacion": {
     required: true,
     type: Date
   },
@@ -31,35 +50,31 @@ const medicalRecordSchema = new Schema({
       required: true,
       type: Schema.Types.ObjectId
     },
-    "fecha_de_aprobacion": {
+    "fechaDeAprobacion": {
       default: Date.now(),
       required: true,
       type: Date
     },
-    "fecha_de_creacion": {
+    "fechaDeCreacion": {
       required: true,
       type: Date
     },
     "profesor": {
-      ref: "profesor",
+      ref: "personal",
       required: true,
       type: Schema.Types.ObjectId
     }
   }],
-  "numero_historia": {
-    required: true,
-    type: String
-  },
   "paciente": {
     ref: "paciente",
     required: true,
     type: Schema.Types.ObjectId
   },
-  "profesor": {
-    ref: "profesor",
+  "personal": {
+    ref: "personal",
     required: true,
     type: Schema.Types.ObjectId
   }
 });
 
-export const medicalRecordModel = model("historiamedica", medicalRecordSchema, "historiasmedicas");
+export const medicalRecordModel: Model<IMedicalRecord> = model<IMedicalRecord>("historiamedica", medicalRecordSchema, "historiasmedicas");
