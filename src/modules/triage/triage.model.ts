@@ -22,6 +22,11 @@ export interface ITriage extends Document {
 
 
 const triageSchema = new Schema({
+  "active": {
+    default: true,
+    required: true,
+    type: Boolean
+  },
   "documento": {
     of: String,
     required: true,
