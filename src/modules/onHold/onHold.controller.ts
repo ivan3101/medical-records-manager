@@ -187,8 +187,8 @@ export class OnHoldController {
       const onHoldId = req.params.id;
       const onHold = await (this.OnHold
         .findById(onHoldId) as any)
-        .orFail("El document no ha sido encontrado. Si esta seguro de que el documento existe," +
-          " vuelva a intentarlo");
+        .orFail(notFound("El document no ha sido encontrado. Si esta seguro de que el documento existe," +
+          " vuelva a intentarlo"));
 
       res
         .status(200)
@@ -217,7 +217,8 @@ export class OnHoldController {
             "estado": "En espera"
           }
         }, { new: true }) as any)
-        .orFail("El document no ha sido encontrado. Si esta seguro de que el documento existe, vuelva a intentarlo");
+        .orFail(notFound("El document no ha sido encontrado. Si esta seguro de que el documento existe, vuelva a" +
+          " intentarlo"));
 
       res
         .status(204)
