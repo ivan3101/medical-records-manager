@@ -1,6 +1,7 @@
 import { Document, model, Model, Schema, Types } from "mongoose";
 
 export interface IOnHold extends Document {
+  active: boolean,
   documento: Map<string, string>,
   estado: string,
   estudiante: Types.ObjectId,
@@ -12,6 +13,11 @@ export interface IOnHold extends Document {
 }
 
 const onHoldSchema = new Schema({
+  "active": {
+    default: true,
+    required: true,
+    type: Boolean
+  },
   "documento": {
     required: true,
     type: Map

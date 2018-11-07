@@ -37,26 +37,29 @@ export class OnHoldController {
       const onHoldId = req.params.id;
 
       const onHold = await (this.OnHold
-        .findById(onHoldId) as any)
+        .findOneAndUpdate({
+          "_id": onHoldId,
+          "active": true,
+          "estado": "En espera"
+        }, {
+          $set: {
+            "estado": "Aprobado"
+          }
+        }, { new: true }) as any)
         .orFail(notFound("El documento en espera no ha sido encontrado. Si esta seguro de que el documento existe," +
           " vuelva a intentarlo"));
-
-      onHold.estado = "Aprobado";
-      const promises = [onHold.save()];
 
       if (onHold.tipo === "triaje") {
         const newTriage = new this.Triage(onHold.toJSON);
         newTriage.numeroDeHistoria = await (this.Triage as any).setRecordNumber();
         newTriage.fechaDeAprobacion = new Date();
-        promises.push(newTriage.save());
+        await newTriage.save();
 
       } else {
         const newMedicalRecord = new this.MedicalRecord(onHold.toJSON);
         newMedicalRecord.fechaDeAprobacion = new Date();
-        promises.push(newMedicalRecord.save());
+        await newMedicalRecord.save();
       }
-
-      await Promise.all(promises);
 
       res
         .status(201)
@@ -75,11 +78,17 @@ export class OnHoldController {
     try {
       const onHoldId = req.params.id;
       const onHold = await (this.OnHold
-        .findById(onHoldId) as any)
+        .findOneAndUpdate({
+          "_id": onHoldId,
+          "active": true,
+          "estado": "En espera"
+        }, {
+          $set: {
+            "estado": "Aprobado"
+          }
+        }, { new: true }) as any)
         .orFail(notFound("El documento en espera no ha sido encontrado. Si esta seguro de que el documento existe," +
           " vuelva a intentarlo"));
-      onHold.estado = "Aprobado";
-      const promises = [onHold.save()];
 
       if (onHold.tipo === "triaje") {
         const actualTriage = await (this.Triage.find({
@@ -92,7 +101,7 @@ export class OnHoldController {
           fechaDeAprobacion: new Date()
         });
 
-        promises.push((actualTriage as any).save());
+       await actualTriage.save();
 
       } else {
         const actualMedicalRecord = await (this.MedicalRecord.find({
@@ -105,10 +114,8 @@ export class OnHoldController {
           fechaDeAprobacion: new Date()
         });
 
-        promises.push((actualMedicalRecord as any).save());
+        await actualMedicalRecord.save();
       }
-
-      await Promise.all(promises);
 
       res
         .status(201)
@@ -124,15 +131,16 @@ export class OnHoldController {
   }
 
   @bind
-  public async changeStatusOnHold(req: Request, res: Response, next: NextFunction): Promise<any> {
+  public async rejectOnHold(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const onHoldId = req.params.id;
-      const status = req.query.status;
-      if (!status) {
-        return next(badRequest("Debe suministrar el nuevo estado del documento"));
-      }
+
       const onHoldUpdated = await (this.OnHold
-        .findByIdAndUpdate(onHoldId, {
+        .findOneAndUpdate({
+          "_id": onHoldId,
+          "active": true,
+          "estado": "En espera"
+        }, {
           $set: { "estado": "Rechazado" }
         }, { new: true }) as any)
         .orFail(notFound("El document no ha sido encontrado. Si esta seguro de que el documento existe," +
@@ -159,6 +167,7 @@ export class OnHoldController {
       const personalId = req.params.personalId;
 
       const onHolds = await (this.OnHold.find({
+        "active": true,
         "estado": status,
         "personal": personalId
       })
@@ -182,11 +191,14 @@ export class OnHoldController {
   }
 
   @bind
-  public async getOnHold(req: Request, res: Response, next: NextFunction): Promise<any> {
+  public async getOnHoldById(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const onHoldId = req.params.id;
       const onHold = await (this.OnHold
-        .findById(onHoldId) as any)
+        .findOne({
+          "_id": onHoldId,
+          "active": true
+        }) as any)
         .orFail(notFound("El document no ha sido encontrado. Si esta seguro de que el documento existe," +
           " vuelva a intentarlo"));
 
@@ -211,13 +223,16 @@ export class OnHoldController {
     try {
       const onHoldId = req.params.id;
       const onHoldModified = await (this.OnHold
-        .findByIdAndUpdate(onHoldId, {
+        .findOneAndUpdate({
+          "_id": onHoldId,
+          "active": true
+        }, {
           $set: {
             "document": req.body.enEspera.documento,
             "estado": "En espera"
           }
         }, { new: true }) as any)
-        .orFail(notFound("El document no ha sido encontrado. Si esta seguro de que el documento existe, vuelva a" +
+        .orFail(notFound("El documento no ha sido encontrado. Si esta seguro de que el documento existe, vuelva a" +
           " intentarlo"));
 
       res
