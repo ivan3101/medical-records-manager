@@ -1,6 +1,7 @@
 import { Document, Model, model, Schema, Types } from "mongoose";
 
 export interface IMedicalRecord extends Document {
+  active: boolean,
   documento: Map<string, string>,
   estudiante: Types.ObjectId,
   fechaDeAprobacion: Date,
@@ -22,6 +23,11 @@ export interface IMedicalRecord extends Document {
 
 
 const medicalRecordSchema = new Schema({
+  "active": {
+    default: true,
+    required: true,
+    type: Boolean
+  },
   "documento": {
     of: String,
     required: true,
