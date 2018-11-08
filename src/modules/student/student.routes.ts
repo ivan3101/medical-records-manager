@@ -17,10 +17,29 @@ export class StudentRoutes {
 
   private initRoutes(): void {
     this.router
-      .get("/", this.authService.isAuthorized(), this.studentController.getAllStudents)
-      .post("/", this.authService.isAuthorized(), this.studentController.addStudent)
-      .get("/:id", this.authService.isAuthorized(), this.studentController.getStudentById)
-      .patch("/:id", this.authService.isAuthorized(), this.studentController.modifyStudent)
-      .delete("/:id", this.authService.isAuthorized(), this.studentController.deleteStudent);
+      .get("/",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("student", "read"),
+        this.studentController.getAllStudents)
+
+      .post("/",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("student", "create"),
+        this.studentController.addStudent)
+
+      .get("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("student", "read"),
+        this.studentController.getStudentById)
+
+      .patch("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("student", "modify"),
+        this.studentController.modifyStudent)
+
+      .delete("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("student", "delete"),
+        this.studentController.deleteStudent);
   }
 }

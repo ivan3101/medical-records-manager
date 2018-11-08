@@ -17,11 +17,34 @@ export class MedicalRecordRoutes {
 
   private initRoutes(): void {
     this.router
-      .get("/", this.authService.isAuthorized(), this.medicalRecordController.getAllMedicalRecords)
-      .post("/", this.authService.isAuthorized(), this.medicalRecordController.createMedicalRecord)
-      .get("/:id", this.authService.isAuthorized(), this.medicalRecordController.getMedicalRecordById)
-      .post("/:id", this.authService.isAuthorized(), this.medicalRecordController.updateMedicalRecord)
-      .patch("/:id", this.authService.isAuthorized(), this.medicalRecordController.modifyMedicalRecord)
-      .delete("/:id", this.authService.isAuthorized(), this.medicalRecordController.deleteMedicalRecord);
+      .get("/",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("medicalRecord", "read"),
+        this.medicalRecordController.getAllMedicalRecords)
+
+      .post("/",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("medicalRecord", "create"),
+        this.medicalRecordController.createMedicalRecord)
+
+      .get("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("medicalRecord", "read"),
+        this.medicalRecordController.getMedicalRecordById)
+
+      .post("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("medicalRecord", "create"),
+        this.medicalRecordController.updateMedicalRecord)
+
+      .patch("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("medicalRecord", "update"),
+        this.medicalRecordController.modifyMedicalRecord)
+
+      .delete("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("medicalRecord", "delete"),
+        this.medicalRecordController.deleteMedicalRecord);
   }
 }

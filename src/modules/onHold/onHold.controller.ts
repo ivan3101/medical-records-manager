@@ -83,13 +83,15 @@ export class OnHoldController {
   @bind
   public async approveOnHoldNew(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
-      const onHoldId = req.params.id;
+      const onHoldId = req.params.onholdId;
+      const professorId = req.params.professorId;
 
       const onHold = await (this.OnHold
         .findOneAndUpdate({
           "_id": onHoldId,
           "active": true,
-          "estado": "En espera"
+          "estado": "En espera",
+          "profesor": professorId
         }, {
           $set: {
             "estado": "Aprobado"
@@ -125,12 +127,15 @@ export class OnHoldController {
   @bind
   public async approveOnHoldMod(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
-      const onHoldId = req.params.id;
+      const onHoldId = req.params.onholdId;
+      const professorId = req.params.professorId;
+
       const onHold = await (this.OnHold
         .findOneAndUpdate({
           "_id": onHoldId,
           "active": true,
-          "estado": "En espera"
+          "estado": "En espera",
+          "profesor": professorId
         }, {
           $set: {
             "estado": "Aprobado"
@@ -182,13 +187,15 @@ export class OnHoldController {
   @bind
   public async rejectOnHold(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
-      const onHoldId = req.params.id;
+      const onHoldId = req.params.onholdId;
+      const professorId = req.params.professorId;
 
       const onHoldUpdated = await (this.OnHold
         .findOneAndUpdate({
           "_id": onHoldId,
           "active": true,
-          "estado": "En espera"
+          "estado": "En espera",
+          "professorId": professorId
         }, {
           $set: { "estado": "Rechazado" }
         }, { new: true }) as any)
@@ -208,17 +215,16 @@ export class OnHoldController {
   }
 
   @bind
-  public async getOnHoldsByPersonal(req: Request, res: Response, next: NextFunction): Promise<any> {
+  public async getOnHoldsByProfessor(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const offset = req.query.offset || 0;
       const limit = req.query.limit || 9;
-      const status = req.query.status || "En espera";
-      const personalId = req.params.personalId;
+      const professorId = req.params.professorId;
 
       const onHolds = await (this.OnHold.find({
         "active": true,
-        "estado": status,
-        "personal": personalId
+        "estado": "En espera",
+        "profesor": professorId
       })
         .skip(offset)
         .limit(limit) as any)
@@ -270,12 +276,14 @@ export class OnHoldController {
   @bind
   public async modifyOnHold(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
-      const onHoldId = req.params.id;
+      const onHoldId = req.params.onholdId;
+      const studentId = req.params.studenId;
       const onHoldModified = await (this.OnHold
         .findOneAndUpdate({
           "_id": onHoldId,
           "active": true,
-          "estado": "Rechazado"
+          "estado": "Rechazado",
+          "estudiante": studentId
         }, {
           $set: {
             "document": req.body.enEspera.documento,
@@ -292,6 +300,131 @@ export class OnHoldController {
           message: "Documento actualizado correctamente",
           status: "successful"
         });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
+  public async deleteOnHold(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const onHoldId = req.params.id;
+      const onHoldModified = await (this.OnHold
+        .findOneAndUpdate({
+          "_id": onHoldId,
+          "active": true,
+        }, {
+          $set: {
+            "active": false
+          }
+        }, { new: true }) as any)
+        .orFail(notFound("El documento no ha sido encontrado. Si esta seguro de que el documento existe, vuelva a" +
+          " intentarlo"));
+
+      res
+        .status(204)
+        .json({
+          httpCode: 204,
+          message: "Documento actualizado correctamente",
+          status: "successful"
+        });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
+  public async getOnHoldsByStudent(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const offset = req.query.offset || 0;
+      const limit = req.query.limit || 9;
+      const status = req.query.status || "En espera";
+      const studentId = req.params.studentId;
+
+      const onHolds = await (this.OnHold.find({
+        "active": true,
+        "estado": status,
+        "student": studentId
+      })
+        .skip(offset)
+        .limit(limit) as any)
+        .orFail(notFound(`No hay documentos ${status}`));
+
+      res
+        .status(200)
+        .json({
+          data: {
+            enEspera: onHolds
+          },
+          httpCode: 200,
+          message: "Documentos encontrados satisfactoriamente",
+          status: "successful"
+        })
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
+  public async getOnHoldByStudent(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const onHoldId = req.params.id;
+      const studentId = req.params.studentId;
+      const status = req.query.status || "En espera";
+
+      const onHold = await (this.OnHold
+        .findOne({
+          "_id": onHoldId,
+          "active": true,
+          "estado": status,
+          "estudiante": studentId
+        }) as any)
+        .orFail(notFound("El document no ha sido encontrado. Si esta seguro de que el documento existe," +
+          " vuelva a intentarlo"));
+
+      res
+        .status(200)
+        .json({
+          data: {
+            enEspera: onHold
+          },
+          httpCode: 200,
+          message: "El documento ha sido encontrado satisfactoriamente",
+          status: "successful"
+        });
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
+  public async getOnHoldByProfessor(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const onHoldId = req.params.onholdId;
+      const professorId = req.params.professorId;
+
+      const onHold = await (this.OnHold
+        .findOne({
+          "_id": onHoldId,
+          "active": true,
+          "estado": "En espera",
+          "profesor": professorId
+        }) as any)
+        .orFail(notFound("El document no ha sido encontrado. Si esta seguro de que el documento existe," +
+          " vuelva a intentarlo"));
+
+      res
+        .status(200)
+        .json({
+          data: {
+            enEspera: onHold
+          },
+          httpCode: 200,
+          message: "El documento ha sido encontrado satisfactoriamente",
+          status: "successful"
+        });
+
     } catch (e) {
       next(e);
     }

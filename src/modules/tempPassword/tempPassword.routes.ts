@@ -17,6 +17,9 @@ export class TempPasswordRoutes {
 
   private initRoutes(): void {
     this.router
-      .post("/", this.authService.isAuthorized(), this.tempPasswordController.createTempPassword);
+      .post("/",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("tempPassword", "create"),
+        this.tempPasswordController.createTempPassword);
   }
 }

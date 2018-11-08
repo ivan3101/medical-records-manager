@@ -1,3 +1,4 @@
+import { unauthorized } from "boom";
 import { bind } from "decko";
 import { Handler, NextFunction, Request, Response } from "express";
 import { sign, SignOptions } from "jsonwebtoken";
@@ -5,6 +6,7 @@ import { Types } from "mongoose";
 import { use } from "passport";
 import { ExtractJwt, StrategyOptions } from "passport-jwt";
 import { variables } from "../config/globals";
+import { permissions } from "../config/permissions";
 import { AuthStrategy } from "../modules/auth/auth.strategy";
 
 export class AuthService {
@@ -27,6 +29,24 @@ export class AuthService {
 
   public initStrategy(): void {
     use("jwt", this.authStrategy.Strategy);
+  }
+
+  public hasPermission(resource: string, permission: string): Handler {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const uid: number = req.user.id.toString();
+
+        const access: boolean = await permissions.isAllowed(uid, resource, permission);
+
+        if (!access) {
+          return next(unauthorized("No tiene los permisos para acceder a este recurso"))
+        } else {
+          next();
+        }
+      } catch (e) {
+        next(e);
+      }
+    }
   }
 
   @bind

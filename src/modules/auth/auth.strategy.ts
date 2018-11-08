@@ -3,8 +3,8 @@ import { NextFunction, Request, Response } from "express";
 import { Model } from "mongoose";
 import { authenticate } from "passport";
 import { Strategy, StrategyOptions } from "passport-jwt";
+import { permissions } from "../../config/permissions";
 import { IPersonal, personalModel } from "../personal/personal.model";
-import { IStudent, studentModel } from "../student/student.model";
 import { ITempPassword, tempPasswordModel } from "../tempPassword/tempPassword.model";
 
 
@@ -72,6 +72,10 @@ export class AuthStrategy {
   }
 
 
+  private async setPermissions(id, rol): Promise<any> {
+    await permissions.addUserRoles(id, rol);
+  }
+
   @bind
   private async verify(payload, next) {
     try {
@@ -87,6 +91,8 @@ export class AuthStrategy {
       if (!user) {
         return next(null, false);
       }
+
+      await this.setPermissions(user._id.toString(), payload.userType);
 
       return next(null, user);
 

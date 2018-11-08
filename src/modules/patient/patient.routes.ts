@@ -17,12 +17,39 @@ export class PatientRoutes {
 
   private initRoutes(): void {
     this.router
-      .get("/", this.authService.isAuthorized(), this.patientController.getAllPatients)
-      .post("/", this.authService.isAuthorized(), this.patientController.addPatient)
-      .get("/:id", this.authService.isAuthorized, this.patientController.getPatientById)
-      .patch("/:id", this.authService.isAuthorized(), this.patientController.modifyPatient)
-      .delete("/:id", this.authService.isAuthorized(), this.patientController.deletePatient)
-      .get("/:id/triage", this.authService.isAuthorized(), this.patientController.getTriagePatient)
-      .get("/:id/medicalrecord", this.authService.isAuthorized(), this.patientController.getMedicalRecordPatient)
+      .get("/",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("patient", "read"),
+        this.patientController.getAllPatients)
+
+      .post("/",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("patient", "create"),
+        this.patientController.addPatient)
+
+      .get("/:id",
+        this.authService.isAuthorized,
+        this.authService.hasPermission("patient", "read"),
+        this.patientController.getPatientById)
+
+      .patch("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("patient", "modify"),
+        this.patientController.modifyPatient)
+
+      .delete("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("patient", "delete"),
+        this.patientController.deletePatient)
+
+      .get("/:id/triage",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("patient", "read"),
+        this.patientController.getTriagePatient)
+
+      .get("/:id/medicalrecord",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("patient", "read"),
+        this.patientController.getMedicalRecordPatient)
   }
 }

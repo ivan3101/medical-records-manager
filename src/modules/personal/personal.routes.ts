@@ -17,10 +17,30 @@ export class PersonalRoutes {
 
   private initRoutes() {
     this.router
-      .get("/", this.authService.isAuthorized(), this.personalController.getAllPersonals)
-      .post("/", this.authService.isAuthorized(), this.personalController.addPersonal)
-      .get("/:id", this.authService.isAuthorized(), this.personalController.getPersonalById)
-      .patch("/:id", this.authService.isAuthorized(), this.personalController.modifyPersonal)
-      .delete("/:id", this.authService.isAuthorized(), this.personalController.deletePersonal);
+      .get("/",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("personal", "read"),
+        this.personalController.getAllPersonals)
+
+      .post("/",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("personal", "create"),
+        this.personalController.addPersonal)
+
+      .get("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("personal", "read"),
+        this.personalController.getPersonalById)
+
+      .patch("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("personal", "modify"),
+        this.personalController.modifyPersonal)
+
+      .delete("/:id",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("personal", "delete"),
+        this.personalController.deletePersonal);
+
   }
 }
