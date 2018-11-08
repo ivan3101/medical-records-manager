@@ -1,7 +1,9 @@
+import Agenda = require("agenda");
 import { bind } from "decko";
 import { NextFunction, Request, Response } from "express";
 import { Model } from "mongoose";
 import { default as PasswordGenerator } from "strict-password-generator";
+import { AgendaService } from "../../services/agendaService";
 import { HelperService } from "../../services/helperService";
 import { ITempPassword, tempPasswordModel } from "./tempPassword.model";
 
@@ -11,6 +13,7 @@ export class TempPasswordController {
   private readonly randomPasswordOptions = {
     exactLength: 10
   };
+  private readonly agenda: Agenda = new AgendaService().Agenda;
 
   @bind
   public async createTempPassword(req: Request, res: Response, next: NextFunction): Promise<any> {
@@ -22,6 +25,9 @@ export class TempPasswordController {
       });
 
       await newTempPassword.save();
+
+      const passwordId = (newTempPassword as any)._id;
+      this.agenda.schedule(newTempPassword.fechaDeCaducidad, "disable password", { "id": passwordId});
 
       res
         .status(201)

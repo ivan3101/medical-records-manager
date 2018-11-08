@@ -12,6 +12,7 @@ import { PersonalRoutes } from "./modules/personal/personal.routes";
 import { StudentRoutes } from "./modules/student/student.routes";
 import { TempPasswordRoutes } from "./modules/tempPassword/tempPassword.routes";
 import { TriageRoutes } from "./modules/triage/triage.routes";
+import { AgendaService } from "./services/agendaService";
 import { AuthService } from "./services/authService";
 import { ErrorService } from "./services/errorService";
 
@@ -20,7 +21,10 @@ export class Server {
   public static closeConnection(server: HttpServer): void {
     server.close(() => {
       connection.close(true, () => {
-        process.exit(0);
+        new AgendaService().Agenda.stop().then(() => {
+            process.exit(0);
+          }
+        )
       })
     })
   }
@@ -28,11 +32,13 @@ export class Server {
   private readonly app = express();
   private readonly errorService = new ErrorService();
   private readonly authService: AuthService = new AuthService();
+  private readonly agenda = new AgendaService();
 
   public constructor() {
     this.initConfig();
     this.initRoutes();
     this.initErrorHandlers();
+    this.agenda.startAgenda();
   }
 
   public get App(): express.Application {
