@@ -4,7 +4,14 @@ import * as express from "express";
 import * as helmet from "helmet";
 import {Server as HttpServer} from "http";
 import {connection} from "mongoose";
-import { TriageController } from "./modules/triage/triage.controller";
+import { AuthRoutes } from "./modules/auth/auth.routes";
+import { MedicalRecordRoutes } from "./modules/medicalRecord/medicalRecord.routes";
+import { OnHoldRoutes } from "./modules/onHold/onHold.routes";
+import { PatientRoutes } from "./modules/patient/patient.routes";
+import { PersonalRoutes } from "./modules/personal/personal.routes";
+import { StudentRoutes } from "./modules/student/student.routes";
+import { TempPasswordRoutes } from "./modules/tempPassword/tempPassword.routes";
+import { TriageRoutes } from "./modules/triage/triage.routes";
 import { AuthService } from "./services/authService";
 import { ErrorService } from "./services/errorService";
 
@@ -18,7 +25,7 @@ export class Server {
     })
   }
 
-  private readonly app = decorateApp(express());
+  private readonly app = express();
   private readonly errorService = new ErrorService();
   private readonly authService: AuthService = new AuthService();
 
@@ -40,7 +47,14 @@ export class Server {
 
   private initRoutes(): any {
     this.app
-      .postAsync("/:id", new TriageController().createTriage);
+      .use("/api/auth", new AuthRoutes().Router)
+      .use("/api/medicalrecord", new MedicalRecordRoutes().Router)
+      .use("/api/onhold", new OnHoldRoutes().Router)
+      .use("/api/patient", new PatientRoutes().Router)
+      .use("/api/personal", new PersonalRoutes().Router)
+      .use("/api/student", new StudentRoutes().Router)
+      .use("/api/temppassword", new TempPasswordRoutes().Router)
+      .use("/api/triage", new TriageRoutes().Router);
   }
 
   private initErrorHandlers(): any {
