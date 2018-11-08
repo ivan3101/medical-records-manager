@@ -274,7 +274,8 @@ export class OnHoldController {
       const onHoldModified = await (this.OnHold
         .findOneAndUpdate({
           "_id": onHoldId,
-          "active": true
+          "active": true,
+          "estado": "Rechazado"
         }, {
           $set: {
             "document": req.body.enEspera.documento,
