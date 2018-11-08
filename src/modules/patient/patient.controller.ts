@@ -65,6 +65,35 @@ export class PatientController {
   }
 
   @bind
+  public async modifyPatient(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const patientId = req.params.id;
+      const modifiedPatient = await (this.Patient
+        .findOneAndUpdate({
+          "_id": patientId,
+          "active": true
+        }, {
+          $set: {
+            ...req.body.paciente
+          }
+        }, { new: true }) as any)
+        .orFail(notFound("No se encontro al paciente. Si esta seguro de que el paciente existe en el sistema, por" +
+          " favor vuelva a intentarlo"));
+
+      res
+        .status(204)
+        .json({
+          httpCode: 204,
+          message: "Paciente modificado satisfactoriamente",
+          status: "success"
+        });
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
   public async getPatientById(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const patientId = req.params.id;
