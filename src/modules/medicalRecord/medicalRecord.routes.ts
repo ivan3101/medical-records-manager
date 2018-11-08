@@ -1,10 +1,9 @@
-import { decorateApp } from "@awaitjs/express";
 import { Router } from "express";
 import { AuthService } from "../../services/authService";
 import { MedicalRecordController } from "./medicalRecord.controller";
 
 export class MedicalRecordRoutes {
-  private readonly router = decorateApp(Router());
+  private readonly router = Router();
   private readonly authService: AuthService = new AuthService();
   private readonly medicalRecordController: MedicalRecordController = new MedicalRecordController();
 
@@ -18,11 +17,11 @@ export class MedicalRecordRoutes {
 
   private initRoutes(): void {
     this.router
-      .getAsync("/", this.authService.isAuthorized(), this.medicalRecordController.getAllMedicalRecords)
-      .postAsync("/", this.authService.isAuthorized(), this.medicalRecordController.createMedicalRecord)
-      .getAsync("/:id", this.authService.isAuthorized(), this.medicalRecordController.getMedicalRecordById)
-      .postAsync("/:id", this.authService.isAuthorized(), this.medicalRecordController.updateMedicalRecord)
-      .patchAsync("/:id", this.authService.isAuthorized(), this.medicalRecordController.modifyMedicalRecord)
+      .get("/", this.authService.isAuthorized(), this.medicalRecordController.getAllMedicalRecords)
+      .post("/", this.authService.isAuthorized(), this.medicalRecordController.createMedicalRecord)
+      .get("/:id", this.authService.isAuthorized(), this.medicalRecordController.getMedicalRecordById)
+      .post("/:id", this.authService.isAuthorized(), this.medicalRecordController.updateMedicalRecord)
+      .patch("/:id", this.authService.isAuthorized(), this.medicalRecordController.modifyMedicalRecord)
       .delete("/:id", this.authService.isAuthorized(), this.medicalRecordController.deleteMedicalRecord);
   }
 }

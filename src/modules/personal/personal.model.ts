@@ -2,7 +2,7 @@ import { Document, model, Model, Schema, Types } from "mongoose";
 
 
 export interface IPersonal extends Document {
-  active: string,
+  active: boolean,
   apellido: string;
   cedula: string;
   contraseña: string;

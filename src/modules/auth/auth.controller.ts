@@ -15,26 +15,27 @@ export class AuthController {
   @bind
   public async signinPersonal(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
-      const personal = await (this.Personal.findOne({
-        "nombreDeUsuario": req.body.personal.nombreDeUsuario
-      }) as any).orFail(unauthorized("Nombre de usuario o Contraseña incorrectos. Por favor, vuelva a intentarlo"));
+      const personal = await this.Personal.findOne({
+        "active": true,
+        "nombreDeUsuario": req.body.personal.nombreDeUsuario,
+      });
 
-      if (await HelperService.verifyPassword(personal.contraseña, req.body.personal.contraseña)) {
-        const token: string = this.authService.createToken(personal._id, personal.rol);
+      if (personal && await HelperService.verifyPassword(personal.contraseña, req.body.personal.contraseña)) {
+        const token: string = await this.authService.createToken(personal._id, personal.rol);
 
         res
-          .status(res.statusCode)
+          .status(200)
           .json({
             data: {
               personal,
-              token: await token
+              token
             },
-            httpCode: res.statusCode,
+            httpCode: 200,
             message: "Inicio de sesion exitoso",
             state: "successful",
-          })
+          });
       } else {
-        next (unauthorized("Nombre de usuario o Contraseña incorrectos. Por favor, vuelva a intentarlo"));
+        next(unauthorized("Nombre de usuario o Contraseña incorrectos. Por favor, vuelva a intentarlo"));
       }
     } catch (e) {
       next(e);
@@ -57,13 +58,13 @@ export class AuthController {
           const token = this.authService.createToken(tempPassword._id, "estudiante");
 
           return res
-            .status(res.statusCode)
+            .status(200)
             .json({
               data: {
                 tempPassword: await tempPassword,
                 token
               },
-              httpCode: res.statusCode,
+              httpCode: 200,
               message: "Inicio de sesion exitoso",
               status: "successful"
             });

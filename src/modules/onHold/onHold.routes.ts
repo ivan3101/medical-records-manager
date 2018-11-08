@@ -1,10 +1,9 @@
-import { decorateApp } from "@awaitjs/express";
 import { Router } from "express";
 import { AuthService } from "../../services/authService";
 import { OnHoldController } from "./onHold.controller";
 
 export class OnHoldRoutes {
-  private readonly router = decorateApp(Router());
+  private readonly router = Router();
   private readonly authService: AuthService = new AuthService();
   private readonly onHoldController: OnHoldController = new OnHoldController();
 
@@ -18,12 +17,12 @@ export class OnHoldRoutes {
 
   private initRoutes(): void {
     this.router
-      .getAsync("/", this.authService.isAuthorized(), this.onHoldController.getAllOnHolds)
-      .postAsync("/", this.authService.isAuthorized(), this.onHoldController.createOnHold)
-      .getAsync("/:id", this.authService.isAuthorized(), this.onHoldController.getOnHoldById)
-      .patchAsync("/:id", this.authService.isAuthorized(), this.onHoldController.modifyOnHold)
-      .patchAsync("/:id/new", this.authService.isAuthorized(), this.onHoldController.approveOnHoldNew)
-      .patchAsync("/:id/mod", this.authService.isAuthorized(), this.onHoldController.approveOnHoldMod)
-      .patchAsync("/:id/reject", this.authService.isAuthorized(), this.onHoldController.rejectOnHold)
+      .get("/", this.authService.isAuthorized(), this.onHoldController.getAllOnHolds)
+      .post("/", this.authService.isAuthorized(), this.onHoldController.createOnHold)
+      .get("/:id", this.authService.isAuthorized(), this.onHoldController.getOnHoldById)
+      .patch("/:id", this.authService.isAuthorized(), this.onHoldController.modifyOnHold)
+      .patch("/:id/new", this.authService.isAuthorized(), this.onHoldController.approveOnHoldNew)
+      .patch("/:id/mod", this.authService.isAuthorized(), this.onHoldController.approveOnHoldMod)
+      .patch("/:id/reject", this.authService.isAuthorized(), this.onHoldController.rejectOnHold)
   }
 }

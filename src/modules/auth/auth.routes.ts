@@ -3,7 +3,7 @@ import { Router } from "express";
 import { AuthController } from "./auth.controller";
 
 export class AuthRoutes {
-  private readonly router = decorateApp(Router());
+  private readonly router = Router();
   private readonly authController: AuthController = new AuthController();
 
   constructor() {
@@ -16,7 +16,7 @@ export class AuthRoutes {
 
   private initRoutes(): void {
     this.router
-      .postAsync("/personal", this.authController.signinPersonal)
-      .postAsync("/accesscode", this.authController.signinTempPassword);
+      .post("/personal", this.authController.signinPersonal)
+      .post("/accesscode", this.authController.signinTempPassword);
   }
 }

@@ -1,10 +1,9 @@
-import { decorateApp } from "@awaitjs/express";
 import { Router } from "express";
 import { AuthService } from "../../services/authService";
 import { PersonalController } from "./personal.controller";
 
 export class PersonalRoutes {
-  private readonly router = decorateApp(Router());
+  private readonly router = Router();
   private readonly authService: AuthService = new AuthService();
   private readonly personalController: PersonalController = new PersonalController();
 
@@ -18,10 +17,10 @@ export class PersonalRoutes {
 
   private initRoutes() {
     this.router
-      .getAsync("/", this.authService.isAuthorized(), this.personalController.getAllPersonals)
-      .postAsync("/", this.authService.isAuthorized(), this.personalController.addPersonal)
-      .getAsync("/:id", this.authService.isAuthorized(), this.personalController.getPersonalById)
-      .patchAsync("/:id", this.authService.isAuthorized(), this.personalController.modifyPersonal)
-      .deleteAsync("/:id", this.authService.isAuthorized(), this.personalController.deletePersonal);
+      .get("/", this.authService.isAuthorized(), this.personalController.getAllPersonals)
+      .post("/", this.authService.isAuthorized(), this.personalController.addPersonal)
+      .get("/:id", this.authService.isAuthorized(), this.personalController.getPersonalById)
+      .patch("/:id", this.authService.isAuthorized(), this.personalController.modifyPersonal)
+      .delete("/:id", this.authService.isAuthorized(), this.personalController.deletePersonal);
   }
 }

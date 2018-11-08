@@ -1,10 +1,9 @@
-import { decorateApp } from "@awaitjs/express";
 import { Router } from "express";
 import { AuthService } from "../../services/authService";
 import { StudentController } from "./student.controller";
 
 export class StudentRoutes {
-  private readonly router = decorateApp(Router());
+  private readonly router = Router();
   private readonly authService: AuthService = new AuthService();
   private readonly studentController: StudentController = new StudentController();
 
@@ -18,10 +17,10 @@ export class StudentRoutes {
 
   private initRoutes(): void {
     this.router
-      .getAsync("/", this.authService.isAuthorized(), this.studentController.getAllStudents)
-      .postAsync("/", this.authService.isAuthorized(), this.studentController.addStudent)
-      .getAsync("/:id", this.authService.isAuthorized(), this.studentController.getStudentById)
-      .patchAsync("/:id", this.authService.isAuthorized(), this.studentController.modifyStudent)
-      .deleteAsync("/:id", this.authService.isAuthorized(), this.studentController.deleteStudent);
+      .get("/", this.authService.isAuthorized(), this.studentController.getAllStudents)
+      .post("/", this.authService.isAuthorized(), this.studentController.addStudent)
+      .get("/:id", this.authService.isAuthorized(), this.studentController.getStudentById)
+      .patch("/:id", this.authService.isAuthorized(), this.studentController.modifyStudent)
+      .delete("/:id", this.authService.isAuthorized(), this.studentController.deleteStudent);
   }
 }
