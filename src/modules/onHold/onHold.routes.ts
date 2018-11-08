@@ -9,7 +9,7 @@ export class OnHoldRoutes {
   private readonly onHoldController: OnHoldController = new OnHoldController();
 
   constructor() {
-    this.initRouter();
+    this.initRoutes();
   }
 
   public get Router() {
