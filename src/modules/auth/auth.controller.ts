@@ -70,7 +70,7 @@ export class AuthController {
         }
       }
 
-      throw (unauthorized("Cedula del estudiante o clave de acceso incorrectos. Por favor, vuelva a" +
+      next (unauthorized("Cedula del estudiante o clave de acceso incorrectos. Por favor, vuelva a" +
         " intentarlo"));
 
     } catch (e) {
