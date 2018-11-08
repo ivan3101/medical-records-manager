@@ -34,7 +34,7 @@ export class AuthController {
             state: "successful",
           })
       } else {
-        throw (unauthorized("Nombre de usuario o Contraseña incorrectos. Por favor, vuelva a intentarlo"));
+        next (unauthorized("Nombre de usuario o Contraseña incorrectos. Por favor, vuelva a intentarlo"));
       }
     } catch (e) {
       next(e);

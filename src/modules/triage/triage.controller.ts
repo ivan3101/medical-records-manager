@@ -66,6 +66,34 @@ export class TriageController {
   }
 
   @bind
+  public async getTriageById(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const triageId = req.params.id;
+      const triage = await (this.Triage
+        .findOne({
+          "_id": triageId,
+          "active": true
+        }) as any)
+        .orFail(notFound("No se pudo encontrar el Triaje. Si esta seguro de que existe, por favor vuelva a" +
+          " intentarlo"));
+
+      res
+        .status(200)
+        .json({
+          data: {
+            triaje: triage
+          },
+          httpCode: 200,
+          message: "Triaje encontrado satisfactoriamente",
+          status: "successful"
+        })
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
   public async modifyTriage(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const triageId = req.params.id;
@@ -75,7 +103,7 @@ export class TriageController {
             ...req.body.triaje
           }
         }, { new: true }) as any)
-      .orFail(notFound("Triaje no encontrado. Si esta seguro de que existe, por favor vuelva a intentarlo"));
+        .orFail(notFound("Triaje no encontrado. Si esta seguro de que existe, por favor vuelva a intentarlo"));
 
       res
         .status(204)

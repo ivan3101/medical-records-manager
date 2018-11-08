@@ -1,10 +1,8 @@
 import { decorateApp } from "@awaitjs/express";
 import { Router } from "express";
-import { AuthService } from "../../services/authService";
 import { AuthController } from "./auth.controller";
 
 export class AuthRoutes {
-  private readonly authService: AuthService = new AuthService();
   private readonly router = decorateApp(Router());
   private readonly authController: AuthController = new AuthController();
 

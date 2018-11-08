@@ -64,6 +64,34 @@ export class MedicalRecordController {
   }
 
   @bind
+  public async getMedicalRecordById(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const medicalRecordId = req.params.id;
+      const medicalRecord = await (this.MedicalRecord
+        .findOne({
+          "_id": medicalRecordId,
+          "active": true
+        }) as any)
+        .orFail(notFound("No se pudo encontrar la Historia medica. Si esta seguro de que existe, por favor vuelva a" +
+          " intentarlo"));
+
+      res
+        .status(200)
+        .json({
+          data: {
+            historiaMedica: medicalRecord
+          },
+          httpCode: 200,
+          message: "Historia medica encontrada satisfactoriamente",
+          status: "successful"
+        })
+
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
   public async modifyMedicalRecord(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const medicalRecordId = req.params.id;
@@ -102,6 +130,8 @@ export class MedicalRecordController {
         .orFail(notFound("Historia medica no encontrada. Si esta seguro de que existe, por favor vuelva a intentarlo"));
 
       medicalRecord.modificaciones.push(req.body.triaje.modificaciones);
+
+      await medicalRecord.save();
 
       res
         .status(204)
