@@ -51,6 +51,36 @@ export class OnHoldController {
   }
 
   @bind
+  public async getAllOnHolds(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const offset = req.query.offset || 0;
+      const limit = req.query.limit || 9;
+      const status = req.query.status || "En espera";
+
+      const onHolds = await (this.OnHold.find({
+        "active": true,
+        "estado": status,
+      })
+        .skip(offset)
+        .limit(limit) as any)
+        .orFail(notFound(`No hay documentos ${status}`));
+
+      res
+        .status(200)
+        .json({
+          data: {
+            enEspera: onHolds
+          },
+          httpCode: 200,
+          message: "Documentos encontrados satisfactoriamente",
+          status: "successful"
+        })
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
   public async approveOnHoldNew(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const onHoldId = req.params.id;
@@ -198,7 +228,7 @@ export class OnHoldController {
         .status(200)
         .json({
           data: {
-            documents: onHolds
+            enEspera: onHolds
           },
           httpCode: 200,
           message: "Documentos encontrados satisfactoriamente",
@@ -225,7 +255,7 @@ export class OnHoldController {
         .status(200)
         .json({
           data: {
-            document: onHold
+            enEspera: onHold
           },
           httpCode: 200,
           message: "El documento ha sido encontrado satisfactoriamente",

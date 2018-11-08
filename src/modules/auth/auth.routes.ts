@@ -14,7 +14,7 @@ export class AuthRoutes {
     return this.router;
   }
 
-  private initRoutes() {
+  private initRoutes(): void {
     this.router
       .postAsync("/personal", this.authController.signinPersonal)
       .postAsync("/accesscode", this.authController.signinTempPassword);

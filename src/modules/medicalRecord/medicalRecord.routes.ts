@@ -16,7 +16,7 @@ export class MedicalRecordRoutes {
     return this.router;
   }
 
-  private initRoutes() {
+  private initRoutes(): void {
     this.router
       .getAsync("/", this.authService.isAuthorized(), this.medicalRecordController.getAllMedicalRecords)
       .postAsync("/", this.authService.isAuthorized(), this.medicalRecordController.createMedicalRecord)
