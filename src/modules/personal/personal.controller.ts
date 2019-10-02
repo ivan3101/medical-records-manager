@@ -13,14 +13,17 @@ export class PersonalController {
   public async addPersonal(req: Request, res: Response, next: NextFunction): Promise<any> {
 
     const email = this.Personal.findOne({
+      active: true,
       "email": req.body.personal.email
     }) as any;
 
     const username = this.Personal.findOne({
+      active: true,
       "nombreDeUsuario": req.body.personal.nombreDeUsuario
     }) as any;
 
     const cedula = this.Personal.findOne({
+      active: true,
       "cedula": req.body.personal.cedula
     }) as any;
 
@@ -85,8 +88,10 @@ export class PersonalController {
       const personal = await (this.Personal
         .findOne({
           "_id": personalId,
-          "active": true
-        }) as any)
+          "active": true,
+          rol: {$ne: "admin"}
+        })
+        .select("-contraseña") as any)
         .orFail(notFound("No se encontro al miembro del Personal. Si esta seguro de que el miembro del Personal" +
           " existe en el sistema, por favor vuelva a intentarlo"));
 
@@ -108,21 +113,37 @@ export class PersonalController {
   @bind
   public async getAllPersonals(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
-      const offset = req.query.offset || 0;
-      const limit = req.query.limit || 9;
-      const personals = await (this.Personal
-        .find({
-          "active": true
-        })
-        .skip(offset)
-        .limit(limit) as any)
-        .orFail(notFound("No se encontro ningun miembro del Personal"));
+      const startindex = req.query.startIndex || null;
+      const limit = 46;
 
-      res
+      let personal;
+
+      if (startindex) {
+        personal = await this.Personal.find({
+          active: true,
+          nombre: { $gte: startindex },
+          rol: {$ne: "admin"}
+        })
+          .sort("nombre")
+          .limit(limit);
+      } else {
+        personal = await this.Personal
+          .find({
+            active: true,
+            rol: {$ne: "admin"}
+          })
+          .sort("nombre")
+          .limit(limit);
+      }
+
+      const nextStartIndex = personal.length < limit ? null : personal[personal.length - 1].nombre;
+
+      return res
         .status(200)
         .json({
           data: {
-            personal: personals
+            personals: personal.slice(0, limit - 1),
+            startindex: nextStartIndex
           },
           httpCode: 200,
           message: "Miembros del personal encontrados satisfactoriamente",
@@ -137,13 +158,23 @@ export class PersonalController {
   public async modifyPersonal(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const personalId = req.params.id;
+
+      const changes = Object.assign({}, req.body.personal);
+
+      if (req.body.personal.contraseña) {
+        changes.contraseña = await HelperService.hashPassword(req.body.personal.contraseña);
+      } else {
+        delete changes.contraseña;
+      }
+
       const modifiedPersonal = await (this.Personal
         .findOneAndUpdate({
           "_id": personalId,
-          "active": true
+          "active": true,
+          rol: { $ne: "admin"}
         }, {
           $set: {
-            ...req.body.personal
+            ...changes
           }
         }, { new: true }) as any)
         .orFail(notFound("No se encontro al miembro del Personal. Si esta seguro de que el miembro del Personal" + "existe en el sistema, por favor vuelva a intentarlo"));
@@ -152,9 +183,46 @@ export class PersonalController {
         .status(204)
         .json({
           httpCode: 204,
-          message: "El miembro del persona se ha actualizado correctamente",
+          message: "El miembro del personal se ha actualizado correctamente",
           status: "successful"
         })
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  @bind
+  public async filterPersonal(req: Request, res: Response, next: NextFunction): Promise<any> {
+    try {
+      const matchText: string = req.query.matchText;
+
+      (this.Personal as any)
+        .search({
+          match: {
+            nombre: {
+              fuzziness: "AUTO",
+              max_expansions: 200,
+              prefix_length: 0,
+              query: matchText
+            }
+          }
+      },{
+          hydrate: false
+        }, (err, filteredPersonal) => {
+          if (err) {
+            return next(err);
+          }
+
+          res
+            .status(200)
+            .json({
+              data: {
+                personal: filteredPersonal.hits.hits
+              }
+            })
+        });
+
+
     } catch (e) {
       next(e);
     }

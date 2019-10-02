@@ -27,6 +27,11 @@ export class StudentRoutes {
         this.authService.hasPermission("student", "create"),
         this.studentController.addStudent)
 
+      .get("/filter",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("student", "create"),
+        this.studentController.getFilteredStudents)
+
       .get("/:id",
         this.authService.isAuthorized(),
         this.authService.hasPermission("student", "read"),

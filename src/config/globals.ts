@@ -7,6 +7,7 @@ export const variables = {
   db_password: process.env.DB_PASSWORD,
   db_port: process.env.DB_PORT,
   db_username: process.env.DB_USERNAME,
+  elasticsearch_url: process.env.ELASTICSEARCH_URL,
   env: process.env.NODE_ENV,
   port: parseInt(process.env.PORT, 10) || 3000,
   secret: process.env.SECRET

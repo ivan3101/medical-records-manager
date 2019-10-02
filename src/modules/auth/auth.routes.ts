@@ -17,6 +17,6 @@ export class AuthRoutes {
   private initRoutes(): void {
     this.router
       .post("/personal", this.authController.signinPersonal)
-      .post("/accesscode", this.authController.signinTempPassword);
+      .post("/student", this.authController.signinTempPassword);
   }
 }

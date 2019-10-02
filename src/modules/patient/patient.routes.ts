@@ -27,8 +27,13 @@ export class PatientRoutes {
         this.authService.hasPermission("patient", "create"),
         this.patientController.addPatient)
 
+      .get("/filter",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("patient", "create"),
+        this.patientController.getFilteredPatients)
+
       .get("/:id",
-        this.authService.isAuthorized,
+        this.authService.isAuthorized(),
         this.authService.hasPermission("patient", "read"),
         this.patientController.getPatientById)
 

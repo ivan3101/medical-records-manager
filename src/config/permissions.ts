@@ -29,22 +29,22 @@ permissions.allow([
       patientPermissions.archivo,
       personalPermissions.archivo,
       studentPermissions.archivo,
-      triagePermissions.archivo
+      triagePermissions.archivo,
+      tempPasswordPermissions.archivo
     ],
     roles: ["archivo"]
   },
   {
     allows: [
-      onHoldPermissions.profesor
+      onHoldPermissions.profesor,
+      patientPermissions.profesor
     ],
     roles: ["profesor"]
   },
   {
-    allows: [
-      onHoldPermissions.estudiante
-    ],
+    allows: [onHoldPermissions.estudiante],
     roles: ["estudiante"]
   }
 ]);
 
-export { permissions }
+export { permissions };

@@ -9,7 +9,8 @@ export interface ITempPassword extends Document {
   },
   fechaDeCaducidad: Date,
   fechaDeCreacion: Date,
-  paciente: Types.ObjectId
+  paciente: Types.ObjectId,
+  profesor: Types.ObjectId
 }
 
 const tempPasswordSchema = new Schema({
@@ -34,7 +35,7 @@ const tempPasswordSchema = new Schema({
   },
   "fechaDeCaducidad": {
     required: [true, "Debe ingresar la fecha de caducidad de la contraseña"],
-    type: Date
+    type: Date,
   },
   "fechaDeCreacion": {
     default: Date.now(),
@@ -42,8 +43,12 @@ const tempPasswordSchema = new Schema({
     type: Date
   },
   "paciente": {
-    ref: "Paciente",
+    ref: "paciente",
     required: [true, "Debe ingresar el paciente al que se accedera usando la contraseña"],
+    type: Schema.Types.ObjectId
+  },
+  "profesor": {
+    ref: "personal",
     type: Schema.Types.ObjectId
   }
 });
@@ -54,6 +59,6 @@ tempPasswordSchema.methods.toJSON = function() {
   delete obj.estudiante.cedula;
   delete obj.__v;
   return obj;
-}
+};
 
 export const tempPasswordModel: Model<ITempPassword> = model<ITempPassword>("contraseña", tempPasswordSchema);

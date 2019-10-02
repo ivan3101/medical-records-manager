@@ -5,6 +5,15 @@ import { variables } from "../config/globals";
 import { ITempPassword, tempPasswordModel } from "../modules/tempPassword/tempPassword.model";
 
 export class AgendaService {
+  public static getClassInstance(): AgendaService {
+    if (!AgendaService.classInstance) {
+      AgendaService.classInstance = new AgendaService();
+    }
+
+    return AgendaService.classInstance;
+  }
+
+  private static classInstance: AgendaService;
 
   private readonly TempPassword: Model<ITempPassword> = tempPasswordModel;
   private readonly agendaConfig: AgendaConfiguration = {
@@ -12,11 +21,11 @@ export class AgendaService {
       address: `mongodb://${variables.db_host}:${variables.db_port}/${variables.db_name}`,
       collection: "schedulejobs"
     },
-    processEvery: "60 minutes"
+    processEvery: "30 seconds"
   };
   private agenda: Agenda;
 
-  constructor() {
+  private constructor() {
     this.initAgenda();
   }
 

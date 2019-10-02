@@ -1,4 +1,6 @@
 import { Router } from "express";
+import formidableMiddleware = require('express-formidable');
+import { join } from "path";
 import { AuthService } from "../../services/authService";
 import { TriageController } from "./triage.controller";
 
@@ -22,9 +24,12 @@ export class TriageRoutes {
         this.authService.hasPermission("triage", "read")
 ,        this.triageController.getAllTriages)
 
-      .post("/",
+      .post("/:id",
         this.authService.isAuthorized(),
         this.authService.hasPermission("triage", "create"),
+        formidableMiddleware({
+          uploadDir: join(process.cwd(), "uploads")
+        }),
         this.triageController.createTriage)
 
       .get("/:id",
@@ -35,16 +40,14 @@ export class TriageRoutes {
       .patch("/:id",
         this.authService.isAuthorized(),
         this.authService.hasPermission("triage", "modify"),
+        formidableMiddleware({
+          uploadDir: join(process.cwd(), "uploads")
+        }),
         this.triageController.modifyTriage)
 
       .delete("/:id",
         this.authService.isAuthorized(),
         this.authService.hasPermission("triage", "delete"),
         this.triageController.deleteTriage)
-
-      .patch("/:id/update",
-        this.authService.isAuthorized(),
-        this.authService.hasPermission("triage", "modify"),
-        this.triageController.updateTriage);
   }
 }

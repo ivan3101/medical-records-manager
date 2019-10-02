@@ -1,5 +1,8 @@
+import * as Mongoosastic from "mongoosastic";
 import { Document, model, Model, Schema, Types } from "mongoose";
+import { ElasticsearchConnService } from "../../services/elasticsearchConnService";
 
+const elasticsearchService = ElasticsearchConnService.getClassInstance();
 
 export interface IPersonal extends Document {
   active: boolean,
@@ -37,8 +40,10 @@ const personalSchema = new Schema({
     type: String
   },
   "nombre": {
+    index: true,
     required: [true, "Debe ingresar el nombre del miembro del personal"],
-    type: String
+    type: String,
+    unique: false
   },
   "nombreDeUsuario": {
     required: [true, "Debe ingresar el nombre de usuario del miembro del personal"],
@@ -60,6 +65,12 @@ personalSchema.methods.toJSON = function() {
   delete obj.contraseña;
   delete obj.__v;
   return obj;
-}
+};
+
+personalSchema.plugin(Mongoosastic, {
+  esClient: elasticsearchService.ElasticInstance,
+  index: "personals",
+  type: "personal"
+});
 
 export const personalModel: Model<IPersonal> = model<IPersonal>("personal", personalSchema);

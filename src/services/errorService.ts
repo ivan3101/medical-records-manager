@@ -27,7 +27,8 @@ export class ErrorService {
           .status(500)
           .json({
             httpStatus: 500,
-            message: env === "development" ? error.message : "Error Interno del Servidor. Por favor, vuelva a intentarlo",
+            message: env !== "production" ? error.message : "Error Interno del Servidor. Por favor, vuelva a" +
+              " intentarlo",
             status: "error"
           });
       }

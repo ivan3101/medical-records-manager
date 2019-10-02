@@ -1,4 +1,8 @@
+import * as Mongoosastic from "mongoosastic";
 import { Document, model, Model, Schema, Types } from "mongoose";
+import { ElasticsearchConnService } from "../../services/elasticsearchConnService";
+
+const elasticsearchService = ElasticsearchConnService.getClassInstance();
 
 export interface IPatient extends Document {
   active: boolean,
@@ -36,6 +40,10 @@ const patientSchema = new Schema({
     required: [true, "Debe ingresar la edad del paciente"],
     type: Number
   },
+  "email": {
+    required: [true, "Debe ingresar el correo electronico del paciente"],
+    type: String
+  },
   "fechaDeNacimiento": {
     required: [true, "Debe ingresar la fecha de nacimiento del paciente"],
     type: Date
@@ -50,13 +58,28 @@ const patientSchema = new Schema({
     type: String
   },
   "nombre": {
+    index: true,
     required: [true, "Debe ingresar el nombre del paciente"],
-    type: String
+    type: String,
+    unique: false
   },
   "telefono": {
     required: [true, "Debe ingresar el numero de telefono del paciente"],
     type: String
   }
 });
+
+patientSchema.methods.toJSON = function() {
+  const obj = this.toObject();
+  delete obj.active;
+  delete obj.__v;
+  return obj;
+};
+
+patientSchema.plugin(Mongoosastic, {
+  esClient: elasticsearchService.ElasticInstance,
+  index: "patients",
+  type: "patient"
+})
 
 export const patientModel: Model<IPatient> = model<IPatient>("paciente", patientSchema);

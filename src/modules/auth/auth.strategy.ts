@@ -93,7 +93,6 @@ export class AuthStrategy {
       }
 
       await this.setPermissions(user._id.toString(), payload.userType);
-
       return next(null, user);
 
     } catch (e) {

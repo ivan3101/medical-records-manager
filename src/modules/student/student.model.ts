@@ -1,4 +1,8 @@
+import * as Mongoosastic from "mongoosastic";
 import { Document, model, Model, Schema, Types } from "mongoose";
+import { ElasticsearchConnService } from "../../services/elasticsearchConnService";
+
+const elasticsearchService = ElasticsearchConnService.getClassInstance();
 
 export interface IStudent extends Document {
   active: boolean,
@@ -13,8 +17,10 @@ export interface IStudent extends Document {
 const studentSchema = new Schema({
   "active": {
     default: true,
+    index: true,
     required: true,
-    type: Boolean
+    type: Boolean,
+    unique: false
   },
   "apellido": {
     required: [true, "Debe ingresar el apellido del estudiante"],
@@ -36,6 +42,19 @@ const studentSchema = new Schema({
     required: [true, "Debe ingresar el numero de telefono del estudiante"],
     type: String
   }
+})
+
+studentSchema.methods.toJSON = function() {
+  const obj = this.toObject();
+  delete obj.active;
+  delete obj.__v;
+  return obj;
+};
+
+studentSchema.plugin(Mongoosastic, {
+  esClient: elasticsearchService.ElasticInstance,
+  index: "students",
+  type: "student"
 });
 
 export const studentModel: Model<IStudent> = model<IStudent>("estudiante", studentSchema);

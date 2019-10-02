@@ -2,7 +2,7 @@ import { Document, model, Model, Schema, Types } from "mongoose";
 
 export interface IOnHold extends Document {
   active: boolean,
-  documento: Map<string, string>,
+  documento: Map<string, any>,
   estado: string,
   estudiante: Types.ObjectId,
   fechaDeCreacion: Date,

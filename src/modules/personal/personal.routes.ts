@@ -27,6 +27,11 @@ export class PersonalRoutes {
         this.authService.hasPermission("personal", "create"),
         this.personalController.addPersonal)
 
+      .get("/filter",
+        this.authService.isAuthorized(),
+        this.authService.hasPermission("personal", "read"),
+        this.personalController.filterPersonal)
+
       .get("/:id",
         this.authService.isAuthorized(),
         this.authService.hasPermission("personal", "read"),

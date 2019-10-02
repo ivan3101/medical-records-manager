@@ -23,7 +23,6 @@ export class AuthService {
 
   public createToken(userId: Types.ObjectId, userType: string): string {
     const payload = { userId, userType };
-
     return sign(payload, this.strategyOptions.secretOrKey, this.signOptions);
   }
 
@@ -35,7 +34,6 @@ export class AuthService {
     return async (req: Request, res: Response, next: NextFunction) => {
       try {
         const uid: number = req.user.id.toString();
-
         const access: boolean = await permissions.isAllowed(uid, resource, permission);
 
         if (!access) {

@@ -1,4 +1,6 @@
 import { Router } from "express";
+import formidableMiddleware = require("express-formidable");
+import { join } from "path";
 import { AuthService } from "../../services/authService";
 import { OnHoldController } from "./onHold.controller";
 
@@ -19,59 +21,35 @@ export class OnHoldRoutes {
     this.router
       .get("/",
         this.authService.isAuthorized(),
-        this.authService.hasPermission("onHold", "read"),        this.onHoldController.getAllOnHolds)
+        this.authService.hasPermission("onHold", "read"),
+        this.onHoldController.getAllOnHolds)
 
-      .post("/",
+      .get("/student/:studentId/patient/:patientId",
+        this.authService.isAuthorized(),
+        this.onHoldController.getOnHoldsByStudent
+        )
+
+      .post("/:studentId",
         this.authService.isAuthorized(),
         this.authService.hasPermission("onHold", "create"),
-        this.onHoldController.createOnHold)
+        formidableMiddleware({
+          multiples: true,
+          uploadDir: join(process.cwd(), "uploads"),
+        }),
+        this.onHoldController.createOnHold
+      )
 
-      .get("/:id",
+      .get("/:professorId",
         this.authService.isAuthorized(),
-        this.authService.hasPermission("onHold", "read"),
-        this.onHoldController.getOnHoldById)
+        this.onHoldController.getOnHoldsByProfessor
+        )
 
-      .delete("/:id",
-        this.authService.isAuthorized(),
-        this.authService.hasPermission("onHold", "delete"),
-        this.onHoldController.deleteOnHold)
-
-      .get("/student/:studentId/onhold",
-        this.authService.isAuthorized(),
-        this.authService.hasPermission("onHold", "read yours"),
-        this.onHoldController.getOnHoldsByStudent)
-
-      .get("/student/:studentId/onhold/:onholdId",
-        this.authService.isAuthorized(),
-        this.authService.hasPermission("onHold", "read yours"),
-        this.onHoldController.getOnHoldByStudent)
-
-      .patch("/student/:studentId/onhold/:onholdId",
-        this.authService.isAuthorized(),
-        this.authService.hasPermission("onHold", "modify"),
-        this.onHoldController.modifyOnHold)
-
-      .get("/professor/:professorId/onhold",
-        this.authService.isAuthorized(),
-        this.authService.hasPermission("onHold", "read on hold"),
-        this.onHoldController.getOnHoldsByProfessor)
-
-      .get("/professor/:professorId/onhold/:onholdId",
-        this.authService.isAuthorized(),
-        this.authService.hasPermission("onHold", "read on hold"),
-        this.onHoldController.getOnHoldByProfessor)
-
-      .patch("/professor/:professoId/onhold/:onholdId/approve/new",
+      .post("/:onHoldId/approve/:professorId",
         this.authService.isAuthorized(),
         this.authService.hasPermission("onHold", "change status"),
         this.onHoldController.approveOnHoldNew)
 
-      .patch("/professor/:professoId/onhold/:onholdId/approve/mod",
-        this.authService.isAuthorized(),
-        this.authService.hasPermission("onHold", "change status"),
-        this.onHoldController.approveOnHoldMod)
-
-      .patch("/professor/:professorId/onhold/:onholdId/reject",
+      .post("/:onHoldId/reject/:professorId",
         this.authService.isAuthorized(),
         this.authService.hasPermission("onHold", "change status"),
         this.onHoldController.rejectOnHold)

@@ -1,4 +1,7 @@
 export const medicalRecordPermissions = {
-  admin: { resources: "medicalRecord", permissions: "*"},
-  archivo: { resources: "medicalRecord", permissions: ["read", "create", "update", "delete"]}
+  admin: { resources: "medicalRecord", permissions: "*" },
+  archivo: {
+    permissions: ["read", "create", "update", "delete"],
+    resources: "medicalRecord"
+  }
 };

@@ -13,15 +13,20 @@ export class TempPasswordController {
   private readonly randomPasswordOptions = {
     exactLength: 10
   };
-  private readonly agenda: Agenda = new AgendaService().Agenda;
+  private readonly agenda: Agenda = AgendaService.getClassInstance().Agenda;
 
   @bind
   public async createTempPassword(req: Request, res: Response, next: NextFunction): Promise<any> {
     try {
       const newPassword = this.passwordGenerator.generatePassword(this.randomPasswordOptions);
+
+      const expDate = new Date();
+      expDate.setDate(expDate.getDate() + 96);
+
       const newTempPassword = new this.TempPassword({
         ...req.body.tempPassword,
-        "contraseña": await HelperService.hashPassword(newPassword)
+        "contraseña": await HelperService.hashPassword(newPassword),
+        fechaDeCaducidad: expDate,
       });
 
       await newTempPassword.save();

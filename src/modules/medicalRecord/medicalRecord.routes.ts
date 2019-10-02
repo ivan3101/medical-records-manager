@@ -1,6 +1,8 @@
 import { Router } from "express";
+import formidableMiddleware = require("express-formidable");
 import { AuthService } from "../../services/authService";
 import { MedicalRecordController } from "./medicalRecord.controller";
+import { join } from "path";
 
 export class MedicalRecordRoutes {
   private readonly router = Router();
@@ -22,9 +24,13 @@ export class MedicalRecordRoutes {
         this.authService.hasPermission("medicalRecord", "read"),
         this.medicalRecordController.getAllMedicalRecords)
 
-      .post("/",
+      .post("/:id",
         this.authService.isAuthorized(),
         this.authService.hasPermission("medicalRecord", "create"),
+        formidableMiddleware({
+          multiples: true,
+          uploadDir: join(process.cwd(), "uploads"),
+        }),
         this.medicalRecordController.createMedicalRecord)
 
       .get("/:id",
@@ -32,14 +38,13 @@ export class MedicalRecordRoutes {
         this.authService.hasPermission("medicalRecord", "read"),
         this.medicalRecordController.getMedicalRecordById)
 
-      .post("/:id",
-        this.authService.isAuthorized(),
-        this.authService.hasPermission("medicalRecord", "create"),
-        this.medicalRecordController.updateMedicalRecord)
-
       .patch("/:id",
         this.authService.isAuthorized(),
         this.authService.hasPermission("medicalRecord", "update"),
+        formidableMiddleware({
+          multiples: true,
+          uploadDir: join(process.cwd(), "uploads")
+        }),
         this.medicalRecordController.modifyMedicalRecord)
 
       .delete("/:id",
